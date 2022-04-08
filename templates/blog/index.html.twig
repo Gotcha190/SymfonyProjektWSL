@@ -1,0 +1,22 @@
+<html>
+
+<head>
+    {% block head %}
+        <title>TYTUŁ STRONY</title>
+    {% endblock %}
+</head>
+
+<body>
+{% block nav %}
+    <div>
+        <a href="/" title="Lista">HomePage</a>
+        <a href="/list" title="Lista">Article list</a>
+        <a href="/login" title="Lista">Login</a>
+        <a href="/about" title="Lista">About me</a>
+    </div>
+{% endblock %}
+{% block content %}
+    <h1>HELLO</h1>
+{% endblock %}
+</body>
+</html>
