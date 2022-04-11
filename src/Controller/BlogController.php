@@ -14,20 +14,10 @@ class BlogController extends AbstractController
      * @return Response
      * @throws Exception
      */
-    #[Route('/', name: 'index')]
+    #[Route('/', name: 'homepage')]
     public function blog(): Response
     {
         return $this->render('blog/index.html.twig');
-    }
-
-    /**
-     * @return Response
-     * @throws Exception
-     */
-    #[Route('/list', name: 'list')]
-    public function list(): Response
-    {
-        return $this->render('blog/list.html.twig');
     }
 
     /**
