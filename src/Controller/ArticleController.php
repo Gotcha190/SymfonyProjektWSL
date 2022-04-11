@@ -40,13 +40,11 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article', name: 'article')]
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(): Response
     {
-        $repository = $doctrine->getRepository(BlogCategory::class);
-        $blogCategories = $repository->findAll();
-
+        //dump($this->blogArticleRepository->findAll());
         return $this->render('article/articleIndex.html.twig', [
-            'categories' => $blogCategories,
+            'categories' => $this->blogCategoryRepository->findAll(),
             'articles' => $this->blogArticleRepository->findAll()
         ]);
     }
@@ -55,11 +53,13 @@ class ArticleController extends AbstractController
      * @return Response
      * @throws \Exception
      */
-    #[Route('/article/cat/{id}', name: 'article_category')]
-    public function blogCategory($id): Response
+    #[Route('/article/{name}', name: 'article_category')]
+    public function articleByCategory($name): Response
     {
+
+        $categoryID = $this->blogCategoryRepository->getCategoryName($name);
         return $this->render('article/category.html.twig', [
-            'id' => $id
+            'articlesByCategory' => $this->blogArticleRepository->showByCategory($categoryID),
         ]);
     }
 
@@ -94,21 +94,20 @@ class ArticleController extends AbstractController
     #[Route('/createArticle', name: 'createArticle')]
     public function newArticle(Request $request, ManagerRegistry $doctrine): Response
     {
-        $repository = $doctrine->getRepository(BlogCategory::class);
-        $blogCategories = $repository->findAll();
+        $blogCategories = $this->blogCategoryRepository->findAll();
 
         $article = new BlogArticle();
         $form = $this->createFormBuilder($article)
             ->add('ShortDescription', TextType::class)
             ->add('LongDescription', TextareaType::class)
             ->add('Image', TextType::class)
-            ->add('Created_at', DateType::class,array(
+            ->add('Created_at', DateType::class, array(
                 'input' => 'datetime_immutable'))
             ->add('Author', TextType::class)
             ->add('Category', EntityType::class, [
-                'class' =>BlogCategory::class,
-                'choice_label' => function($blogCategories){
-                return $blogCategories->getName();
+                'class' => BlogCategory::class,
+                'choice_label' => function ($blogCategories) {
+                    return $blogCategories->getName();
                 }
             ])
             ->add('save', SubmitType::class, ['label' => 'Create Category!'])

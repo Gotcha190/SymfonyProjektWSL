@@ -1,0 +1,7 @@
+{% extends 'blog/index.html.twig' %}
+{% block content %}
+    {% for article in articlesByCategory %}
+        <p>{{ article.ShortDescription }}</p>
+        <p>{{ article.LongDescription }}</p>
+    {% endfor %}
+{% endblock %}

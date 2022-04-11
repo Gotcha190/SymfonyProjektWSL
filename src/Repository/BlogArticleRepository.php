@@ -45,6 +45,14 @@ class BlogArticleRepository extends ServiceEntityRepository
         }
     }
 
+    public function showByCategory($category)
+    {
+        return $this->createQueryBuilder('cat')
+            ->andWhere('cat.Category = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->execute();
+    }
     // /**
     //  * @return BlogArticle[] Returns an array of BlogArticle objects
     //  */
@@ -52,7 +60,7 @@ class BlogArticleRepository extends ServiceEntityRepository
     public function findByExampleField($value)
     {
         return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
+            ->andWhere('b.Category = :val')
             ->setParameter('val', $value)
             ->orderBy('b.id', 'ASC')
             ->setMaxResults(10)
@@ -60,7 +68,7 @@ class BlogArticleRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?BlogArticle

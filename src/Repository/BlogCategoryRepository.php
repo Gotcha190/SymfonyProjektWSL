@@ -44,7 +44,14 @@ class BlogCategoryRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
+    public function getCategoryName($name)
+    {
+        return $this->createQueryBuilder('id')
+            ->andWhere('id.name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->execute();
+    }
     // /**
     //  * @return BlogCategory[] Returns an array of BlogCategory objects
     //  */
