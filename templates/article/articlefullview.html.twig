@@ -1,0 +1,8 @@
+{% extends 'blog/index.html.twig' %}
+{% block content %}
+        <p>{{ article.ShortDescription }}</p>
+        <p>{{ article.LongDescription }}</p>
+        <p>{{ article.Category.name }}</p>
+        <img src="{{ article.Image}}" alt="Brak obrazka">
+        <p>{{ article.CreatedAt|date("m/d/y")}}</p>
+{% endblock %}

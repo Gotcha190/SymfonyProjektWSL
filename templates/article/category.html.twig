@@ -1,7 +1,8 @@
 {% extends 'blog/index.html.twig' %}
 {% block content %}
     {% for article in articlesByCategory %}
-        <p>{{ article.ShortDescription }}</p>
+        <p><a href="/article/{{ article.Category.name }}/{{ article.ShortDescription }}">{{ article.ShortDescription }}</a></p>
         <p>{{ article.LongDescription }}</p>
+        <p>{{ article.Category.name }}</p>
     {% endfor %}
 {% endblock %}

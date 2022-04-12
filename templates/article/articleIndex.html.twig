@@ -12,8 +12,8 @@
     {% endfor %}
     </br>
     {% for article in articles %}
-        <p>{{ article.ShortDescription }}</p>
+        <p>Title: <a href="/article/{{ article.Category.name }}/{{ article.ShortDescription }}">{{ article.ShortDescription }}</a></p>
         <p>{{ article.LongDescription }}</p>
-
+        <p>Category: {{ article.Category.name }}</p>
     {% endfor %}
 {% endblock %}

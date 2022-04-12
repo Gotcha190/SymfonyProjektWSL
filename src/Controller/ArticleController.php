@@ -53,13 +53,21 @@ class ArticleController extends AbstractController
      * @return Response
      * @throws \Exception
      */
-    #[Route('/article/{name}', name: 'article_category')]
-    public function articleByCategory($name): Response
+    #[Route('/article/{category}', name: 'article_category')]
+    public function articleByCategory($category): Response
     {
 
-        $categoryID = $this->blogCategoryRepository->getCategoryName($name);
+        $categoryID = $this->blogCategoryRepository->getCategoryName($category);
         return $this->render('article/category.html.twig', [
             'articlesByCategory' => $this->blogArticleRepository->showByCategory($categoryID),
+        ]);
+    }
+
+    #[Route('/article/{category}/{name}', name: 'article_full')]
+    public function articleFullView($name): Response
+    {
+        return $this->render('article/articlefullview.html.twig', [
+            'article' => $this->blogArticleRepository->findOneBy(['ShortDescription' => $name])
         ]);
     }
 
