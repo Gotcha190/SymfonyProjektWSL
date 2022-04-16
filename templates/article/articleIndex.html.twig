@@ -3,8 +3,10 @@
 {% block title %}Hello ArticleController!{% endblock %}
 
 {% block content %}
+    {%  if is_granted('ROLE_ADMIN') %}
     <button> <a href = "/createCategory"><h4>Create Category</h4></a></button>
     <button> <a href = "/createArticle"><h4>Create Article</h4></a></button>
+    {% endif %}
     <h1>Articles</h1>
     <a>Categorires</a></br>
     {% for category in categories %}

@@ -24,19 +24,6 @@ class BlogController extends AbstractController
      * @return Response
      * @throws Exception
      */
-    #[Route('/login', name: 'login')]
-    public function login(): Response
-    {
-        $number = random_int(0, 100);
-        return $this->render('blog/login.html.twig',[
-            'number' => $number
-        ]);
-    }
-
-    /**
-     * @return Response
-     * @throws Exception
-     */
     #[Route('/about', name: 'about')]
     public function about(): Response
     {

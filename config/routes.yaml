@@ -8,3 +8,6 @@ kernel:
 #app_lucky_number:
 #    path: /lucky
 #    controller: App\Controller\LuckyController::number
+app_logout:
+    path: /logout
+    methods: GET
