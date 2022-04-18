@@ -3,19 +3,36 @@
 {% block title %}Hello ArticleController!{% endblock %}
 
 {% block content %}
-    {%  if is_granted('ROLE_ADMIN') %}
-    <button> <a href = "/createCategory"><h4>Create Category</h4></a></button>
-    <button> <a href = "/createArticle"><h4>Create Article</h4></a></button>
+    {% if is_granted('ROLE_ADMIN') %}
+        <button><a href="/createCategory"><h4>Create Category</h4></a></button>
+        <button><a href="/createArticle"><h4>Create Article</h4></a></button>
     {% endif %}
     <h1>Articles</h1>
     <a>Categorires</a></br>
     {% for category in categories %}
-        <button> <a href = "/article/{{ category.name }}"> {{ category.name }}</a></button>
+        <button><a href="/article/{{ category.name }}"> {{ category.name }}</a></button>
     {% endfor %}
     </br>
     {% for article in articles %}
-        <p>Title: <a href="/article/{{ article.Category.name }}/{{ article.ShortDescription }}">{{ article.ShortDescription }}</a></p>
+        <p>Title:
+            <a href="/article/{{ article.Category.name }}/{{ article.ShortDescription }}">{{ article.ShortDescription }}</a>
+        </p>
         <p>{{ article.LongDescription }}</p>
         <p>Category: {{ article.Category.name }}</p>
+        <p>Komentarze:</p>
+
+        {% for comment in article.comments %}
+            <div style="border: solid red">
+                <p>User: {{ comment.author.username }}</p>
+                <p>Title: {{ comment.title }}</p>
+                <p>{{ comment.content }}</p>
+                <p> {{ comment.createdAt|ago }}</p>
+            </div>
+        {% endfor %}
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <button><a href="/createComment">Dodaj komentarz</a></button>
+        {% else %}
+            <p><a href="/login">Zaloguj się</a> aby dodać komentarz</p>
+        {% endif %}
     {% endfor %}
 {% endblock %}

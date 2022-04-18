@@ -8,17 +8,26 @@
 
 <body>
 {% block nav %}
-    <div>
-        <a href="/" title="Lista">HomePage</a>
-        <a href="/article" title="Lista">Article list</a>
-        <a href="/login" title="Lista">Login</a>
-        <a href="/register" title="Lista">Register</a>
-        <a href="/about" title="Lista">About me</a>
+    <div style="display: flex">
+        <div style = "text-align: left;width: 50%">
+            <a href="/" title="Lista">HomePage</a>
+            <a href="/article" title="Lista">Article list</a>
+            <a href="/about" title="Lista">About me</a>
+        </div>
+        <div style="text-align: right;width: 50%">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a href="/logout" title="Lista">Logout</a>
+            {% else  %}
+                <a href="/login" title="Lista">Login</a>
+                <a href="/register" title="Lista">Register</a>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 {% block content %}
     <h1>HELLO</h1>
     <p>TODO: Komentarze i sonda</p>
+    <p>TODO: Pagination</p>
 {% endblock %}
 </body>
 </html>

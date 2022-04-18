@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\BlogArticle;
 use App\Entity\BlogCategory;
+use App\Entity\Comment;
+use App\Form\CommentFormType;
 use App\Repository\BlogArticleRepository;
 use App\Repository\BlogCategoryRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\Security;
 
 class ArticleController extends AbstractController
 {
@@ -32,20 +36,29 @@ class ArticleController extends AbstractController
      */
     private $blogCategoryRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    /**
+     * @var \Doctrine\ORM\EntityRepository|\Doctrine\Persistence\ObjectRepository
+     */
+    private $commentRepository;
+
+    private $security;
+
+    public function __construct(EntityManagerInterface $entityManager, Security $security)
     {
         $this->entityManager = $entityManager;
         $this->blogArticleRepository = $entityManager->getRepository('App:BlogArticle');
         $this->blogCategoryRepository = $entityManager->getRepository('App:BlogCategory');
+        $this->commentRepository = $entityManager->getRepository('App:Comment');
+        $this->security = $security;
     }
 
     #[Route('/article', name: 'article')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         //dump($this->blogArticleRepository->findAll());
         return $this->render('article/articleIndex.html.twig', [
             'categories' => $this->blogCategoryRepository->findAll(),
-            'articles' => $this->blogArticleRepository->findAll()
+            'articles' => $this->blogArticleRepository->findAll(),
         ]);
     }
 
@@ -64,10 +77,23 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/{category}/{name}', name: 'article_full')]
-    public function articleFullView($name): Response
+    public function articleFullView($name, Request $request): Response
     {
+        $comment = new Comment();
+        $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setArticle($this->blogArticleRepository->findOneBy(['ShortDescription' => $name]));
+            $comment->setAuthor($this->getUser());
+            $comment->setCreatedAt(new \DateTimeImmutable());
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('homepage');
+        }
         return $this->render('article/articlefullview.html.twig', [
-            'article' => $this->blogArticleRepository->findOneBy(['ShortDescription' => $name])
+            'article' => $this->blogArticleRepository->findOneBy(['ShortDescription' => $name]),
+            'comment_form' => $form->createView()
         ]);
     }
 
