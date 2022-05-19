@@ -10,6 +10,18 @@
                 <div>{{ form(comment_form) }}</div>
                 {% for comment in article.comments %}
                         <div style="border: solid red">
+                                {% if is_granted('CAN_EDIT', comment) %}
+                                        <form action="{{ path('comment_edit', {"articleCategory": article.category.name, "articleShortDescription": article.shortDescription,'id': comment.id, 'articleId': article.id,}) }}" method="post">
+                                                <input type="hidden" name="_csrf_token" value="{{csrf_token('edit_comment')}}" />
+                                                <button>EDIT</button>
+                                        </form>
+                                {% endif %}
+                                {% if is_granted('CAN_DELETE', comment) %}
+                                        <form action="{{ path('comment_delete', {'id': comment.id, 'articleId': article.id}) }}" method="post">
+                                                <input type="hidden" name="_csrf_token" value="{{csrf_token('delete_comment')}}" />
+                                                <button>DELETE</button>
+                                        </form>
+                                {% endif %}
                                 <p>User: {{ comment.author.username }}</p>
                                 <p>Title: {{ comment.title }}</p>
                                 <p>{{ comment.content }}</p>

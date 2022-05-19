@@ -60,7 +60,6 @@ class ArticleController extends AbstractController
     #[Route('/article', name: 'article')]
     public function index(Request $request): Response
     {
-        //dump($this->blogArticleRepository->findAll());
         return $this->render('article/articleIndex.html.twig', [
             'categories' => $this->blogCategoryRepository->findAll(),
             'articles' => $this->blogArticleRepository->findAll(),
@@ -74,7 +73,6 @@ class ArticleController extends AbstractController
     #[Route('/article/{category}', name: 'article_category')]
     public function articleByCategory($category): Response
     {
-
         $categoryID = $this->blogCategoryRepository->getCategoryName($category);
         return $this->render('article/category.html.twig', [
             'articlesByCategory' => $this->blogArticleRepository->showByCategory($categoryID),
@@ -134,7 +132,6 @@ class ArticleController extends AbstractController
     public function newArticle(Request $request, ManagerRegistry $doctrine): Response
     {
         $blogCategories = $this->blogCategoryRepository->findAll();
-
         $article = new BlogArticle();
         $form = $this->createFormBuilder($article)
             ->add('ShortDescription', TextType::class)
@@ -158,8 +155,6 @@ class ArticleController extends AbstractController
             $manager = $doctrine->getManager();
             $manager->persist($article);
             $manager->flush();
-            // ... perform some action, such as saving the task to the database
-
             return $this->redirectToRoute('homepage');
         }
 
@@ -180,7 +175,6 @@ class ArticleController extends AbstractController
     #[Route('/blog/commentDelete/{id}-{articleId}', name: "comment_delete", methods: "POST")]
     public function commentDelete(Request $request, $id, $articleId, CommentRepository $commentRepository): RedirectResponse
     {
-
         $comment = $commentRepository->find($id);
         $this->entityManager->remove($comment);
         $this->entityManager->flush();
