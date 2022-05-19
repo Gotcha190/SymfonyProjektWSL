@@ -9,15 +9,20 @@ use App\Form\CommentFormType;
 use App\Repository\BlogArticleRepository;
 use App\Repository\BlogCategoryRepository;
 use App\Repository\CommentRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,16 +33,16 @@ class ArticleController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     /**
-     * @var \Doctrine\ORM\EntityRepository|\Doctrine\Persistence\ObjectRepository
+     * @var EntityRepository|ObjectRepository
      */
     private $blogArticleRepository;
     /**
-     * @var \Doctrine\ORM\EntityRepository|\Doctrine\Persistence\ObjectRepository
+     * @var EntityRepository|ObjectRepository
      */
     private $blogCategoryRepository;
 
     /**
-     * @var \Doctrine\ORM\EntityRepository|\Doctrine\Persistence\ObjectRepository
+     * @var EntityRepository|ObjectRepository
      */
     private $commentRepository;
 
@@ -64,7 +69,7 @@ class ArticleController extends AbstractController
 
     /**
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route('/article/{category}', name: 'article_category')]
     public function articleByCategory($category): Response
@@ -85,7 +90,7 @@ class ArticleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setArticle($this->blogArticleRepository->findOneBy(['ShortDescription' => $name]));
             $comment->setAuthor($this->getUser());
-            $comment->setCreatedAt(new \DateTimeImmutable());
+            $comment->setCreatedAt(new DateTimeImmutable());
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
 
@@ -160,6 +165,50 @@ class ArticleController extends AbstractController
 
         return $this->renderForm('article/newArticle.html.twig', [
             'articleForm' => $form,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @param $articleId
+     * @param CommentRepository $commentRepository
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse
+     * @throws Exception
+     */
+    #[Route('/blog/commentDelete/{id}-{articleId}', name: "comment_delete", methods: "POST")]
+    public function commentDelete(Request $request, $id, $articleId, CommentRepository $commentRepository): RedirectResponse
+    {
+
+        $comment = $commentRepository->find($id);
+        $this->entityManager->remove($comment);
+        $this->entityManager->flush();
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @param $articleId
+     * @param CommentRepository $commentRepository
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    #[Route('/blog/{articleCategory}/{articleShortDescription}/commentEdit/{id}{articleId}', name: "comment_edit", methods: "POST")]
+    public function commentEdit(Request $request, $id, $articleId, CommentRepository $commentRepository): RedirectResponse|Response
+    {
+        $comment = $commentRepository->find($id);
+        $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setCreatedAt(new DateTimeImmutable());
+            $this->entityManager->flush();
+            return $this->redirectToRoute('homepage');
+        }
+        return $this->render('article/articlefullview.html.twig', [
+            'article' => $this->blogArticleRepository->findOneBy(['id' => $articleId]),
+            'comment_form' => $form->createView()
         ]);
     }
 }

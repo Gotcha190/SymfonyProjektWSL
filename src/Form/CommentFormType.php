@@ -18,9 +18,7 @@ class CommentFormType extends AbstractType
         $builder
             ->add('title')
             ->add('content')
-            //->add('createdAt')
             ->add('save', SubmitType::class, ['label' => 'Save comment'])
-            //->add('article')
         ;
     }
 
