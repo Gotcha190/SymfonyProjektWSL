@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\BlogCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,8 +20,8 @@ class BlogCategoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param BlogCategory $entity
+     * @param bool $flush
      */
     public function add(BlogCategory $entity, bool $flush = true): void
     {
@@ -34,8 +32,8 @@ class BlogCategoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param BlogCategory $entity
+     * @param bool $flush
      */
     public function remove(BlogCategory $entity, bool $flush = true): void
     {
@@ -44,7 +42,12 @@ class BlogCategoryRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-    public function getCategoryName($name)
+
+    /**
+     * @param $name
+     * @return array
+     */
+    public function getCategoryName($name): array
     {
         return $this->createQueryBuilder('id')
             ->andWhere('id.name = :name')
@@ -52,32 +55,4 @@ class BlogCategoryRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
-    // /**
-    //  * @return BlogCategory[] Returns an array of BlogCategory objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?BlogCategory
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

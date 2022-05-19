@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use Exception;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\{Bundle\FrameworkBundle\Controller\AbstractController,
+    Component\HttpFoundation\Response,
+    Component\Routing\Annotation\Route
+};
 
 
 class BlogController extends AbstractController

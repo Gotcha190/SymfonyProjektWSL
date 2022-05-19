@@ -1,32 +1,38 @@
 {% extends 'blog/index.html.twig' %}
 {% block content %}
-        <p>{{ article.ShortDescription }}</p>
-        <p>{{ article.LongDescription }}</p>
-        <p>{{ article.Category.name }}</p>
-        <img src="{{ article.Image}}" alt="Brak obrazka">
-        <p>{{ article.CreatedAt|date("m/d/y")}}</p>
-        {% block comments %}
-                <p>Comments:</p>
-                <div>{{ form(comment_form) }}</div>
-                {% for comment in article.comments %}
-                        <div style="border: solid red">
-                                {% if is_granted('CAN_EDIT', comment) %}
-                                        <form action="{{ path('comment_edit', {"articleCategory": article.category.name, "articleShortDescription": article.shortDescription,'id': comment.id, 'articleId': article.id,}) }}" method="post">
-                                                <input type="hidden" name="_csrf_token" value="{{csrf_token('edit_comment')}}" />
-                                                <button>EDIT</button>
-                                        </form>
-                                {% endif %}
-                                {% if is_granted('CAN_DELETE', comment) %}
-                                        <form action="{{ path('comment_delete', {'id': comment.id, 'articleId': article.id}) }}" method="post">
-                                                <input type="hidden" name="_csrf_token" value="{{csrf_token('delete_comment')}}" />
-                                                <button>DELETE</button>
-                                        </form>
-                                {% endif %}
-                                <p>User: {{ comment.author.username }}</p>
-                                <p>Title: {{ comment.title }}</p>
-                                <p>{{ comment.content }}</p>
-                                <p> {{ comment.createdAt|ago }}</p>
-                        </div>
-                {% endfor %}
-        {% endblock %}
+    <p>{{ article.ShortDescription }}</p>
+    <p>{{ article.LongDescription }}</p>
+    <p>{{ article.Category.name }}</p>
+    <img src="{{ article.Image }}" alt="Brak obrazka">
+    <p>{{ article.CreatedAt|date("m/d/y") }}</p>
+    {% block comments %}
+        <p>Comments:</p>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <div>{{ form(comment_form) }}</div>
+        {% else %}
+            <p><a href="/login">Zaloguj się</a> aby dodać komentarz</p>
+        {% endif %}
+        {% for comment in article.comments %}
+            <div style="border: solid red">
+                {% if is_granted('CAN_EDIT', comment) %}
+                    <form action="{{ path('comment_edit', {"articleCategory": article.category.name, "articleShortDescription": article.shortDescription,'id': comment.id, 'articleId': article.id,}) }}"
+                          method="post">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('edit_comment') }}"/>
+                        <button>EDIT</button>
+                    </form>
+                {% endif %}
+                {% if is_granted('CAN_DELETE', comment) %}
+                    <form action="{{ path('comment_delete', {'id': comment.id, 'articleId': article.id}) }}"
+                          method="post">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_comment') }}"/>
+                        <button>DELETE</button>
+                    </form>
+                {% endif %}
+                <p>User: {{ comment.author.username }}</p>
+                <p>Title: {{ comment.title }}</p>
+                <p>{{ comment.content }}</p>
+                <p> {{ comment.createdAt|ago }}</p>
+            </div>
+        {% endfor %}
+    {% endblock %}
 {% endblock %}

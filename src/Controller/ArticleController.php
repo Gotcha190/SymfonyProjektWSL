@@ -2,32 +2,26 @@
 
 namespace App\Controller;
 
-use App\Entity\BlogArticle;
-use App\Entity\BlogCategory;
-use App\Entity\Comment;
-use App\Form\CommentFormType;
-use App\Repository\BlogArticleRepository;
-use App\Repository\BlogCategoryRepository;
-use App\Repository\CommentRepository;
+use App\{Entity\BlogArticle, Entity\BlogCategory, Entity\Comment, Form\CommentFormType, Repository\CommentRepository};
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectRepository;
+use Doctrine\{ORM\EntityManagerInterface,
+    ORM\EntityRepository,
+    Persistence\ManagerRegistry,
+    Persistence\ObjectRepository
+};
 use Exception;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Security\Core\Security;
+use Symfony\{Bridge\Doctrine\Form\Type\EntityType,
+    Bundle\FrameworkBundle\Controller\AbstractController,
+    Component\Form\Extension\Core\Type\DateType,
+    Component\Form\Extension\Core\Type\SubmitType,
+    Component\Form\Extension\Core\Type\TextareaType,
+    Component\Form\Extension\Core\Type\TextType,
+    Component\HttpFoundation\RedirectResponse,
+    Component\HttpFoundation\Request,
+    Component\HttpFoundation\Response,
+    Component\Routing\Annotation\Route,
+    Component\Security\Core\Security
+};
 
 class ArticleController extends AbstractController
 {
@@ -35,18 +29,18 @@ class ArticleController extends AbstractController
     /**
      * @var EntityRepository|ObjectRepository
      */
-    private $blogArticleRepository;
+    private ObjectRepository|EntityRepository $blogArticleRepository;
     /**
      * @var EntityRepository|ObjectRepository
      */
-    private $blogCategoryRepository;
+    private ObjectRepository|EntityRepository $blogCategoryRepository;
 
     /**
      * @var EntityRepository|ObjectRepository
      */
-    private $commentRepository;
+    private ObjectRepository|EntityRepository $commentRepository;
 
-    private $security;
+    private Security $security;
 
     public function __construct(EntityManagerInterface $entityManager, Security $security)
     {
@@ -57,8 +51,11 @@ class ArticleController extends AbstractController
         $this->security = $security;
     }
 
+    /**
+     * @return Response
+     */
     #[Route('/article', name: 'article')]
-    public function index(Request $request): Response
+    public function index(): Response
     {
         return $this->render('article/articleIndex.html.twig', [
             'categories' => $this->blogCategoryRepository->findAll(),
@@ -67,8 +64,8 @@ class ArticleController extends AbstractController
     }
 
     /**
+     * @param $category
      * @return Response
-     * @throws Exception
      */
     #[Route('/article/{category}', name: 'article_category')]
     public function articleByCategory($category): Response

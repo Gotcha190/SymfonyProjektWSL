@@ -4,14 +4,15 @@ namespace App\Entity;
 
 use App\Repository\BlogArticleRepository;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\{Common\Collections\ArrayCollection,
+    Common\Collections\Collection,
+    ORM\Mapping as ORM,
+    ORM\Mapping\Column,
+    ORM\Mapping\GeneratedValue,
+    ORM\Mapping\Id,
+    ORM\Mapping\JoinColumn,
+    ORM\Mapping\ManyToOne
+};
 
 #[ORM\Entity(repositoryClass: BlogArticleRepository::class)]
 class BlogArticle

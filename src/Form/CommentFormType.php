@@ -2,13 +2,13 @@
 
 namespace App\Form;
 
-use App\Entity\Comment;
-use App\Entity\User;
+use App\Entity\{Comment, User};
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\{AbstractType,
+    Extension\Core\Type\HiddenType,
+    Extension\Core\Type\SubmitType,
+    FormBuilderInterface
+};
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CommentFormType extends AbstractType
@@ -18,8 +18,7 @@ class CommentFormType extends AbstractType
         $builder
             ->add('title')
             ->add('content')
-            ->add('save', SubmitType::class, ['label' => 'Save comment'])
-        ;
+            ->add('save', SubmitType::class, ['label' => 'Save comment']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

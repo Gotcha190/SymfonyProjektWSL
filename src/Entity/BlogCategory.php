@@ -3,13 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BlogCategoryRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\Common\{Collections\ArrayCollection, Collections\Collection};
+use Doctrine\ORM\{Mapping as ORM, Mapping\Column, Mapping\GeneratedValue, Mapping\Id, Mapping\OneToMany};
 
 #[ORM\Entity(repositoryClass: BlogCategoryRepository::class)]
 class BlogCategory

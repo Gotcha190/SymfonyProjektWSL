@@ -9,7 +9,7 @@
 <body>
 {% block nav %}
     <div style="display: flex">
-        <div style = "text-align: left;width: 50%">
+        <div style="text-align: left;width: 50%">
             <a href="/" title="Lista">HomePage</a>
             <a href="/article" title="Lista">Article list</a>
             <a href="/about" title="Lista">About me</a>
@@ -17,7 +17,7 @@
         <div style="text-align: right;width: 50%">
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                 <a href="/logout" title="Lista">Logout</a>
-            {% else  %}
+            {% else %}
                 <a href="/login" title="Lista">Login</a>
                 <a href="/register" title="Lista">Register</a>
             {% endif %}
@@ -26,7 +26,7 @@
 {% endblock %}
 {% block content %}
     <h1>HELLO</h1>
-    <p>TODO: Komentarze i sonda</p>
+    <p>TODO: Sonda</p>
     <p>TODO: Pagination</p>
 {% endblock %}
 </body>
