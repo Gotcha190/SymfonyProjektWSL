@@ -25,11 +25,16 @@ use Symfony\{Bridge\Doctrine\Form\Type\EntityType,
 
 class ArticleController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+
     /**
      * @var EntityRepository|ObjectRepository
      */
     private ObjectRepository|EntityRepository $blogArticleRepository;
+
     /**
      * @var EntityRepository|ObjectRepository
      */
