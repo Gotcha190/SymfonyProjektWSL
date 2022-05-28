@@ -2,30 +2,30 @@
 
 namespace App\Repository;
 
-use App\Entity\PollResponse;
+use App\Entity\PollAnswer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method PollResponse|null find($id, $lockMode = null, $lockVersion = null)
- * @method PollResponse|null findOneBy(array $criteria, array $orderBy = null)
- * @method PollResponse[]    findAll()
- * @method PollResponse[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method PollAnswer|null find($id, $lockMode = null, $lockVersion = null)
+ * @method PollAnswer|null findOneBy(array $criteria, array $orderBy = null)
+ * @method PollAnswer[]    findAll()
+ * @method PollAnswer[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PollResponseRepository extends ServiceEntityRepository
+class PollAnswerRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PollResponse::class);
+        parent::__construct($registry, PollAnswer::class);
     }
 
     /**
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(PollResponse $entity, bool $flush = true): void
+    public function add(PollAnswer $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -37,7 +37,7 @@ class PollResponseRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(PollResponse $entity, bool $flush = true): void
+    public function remove(PollAnswer $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {
@@ -46,7 +46,7 @@ class PollResponseRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return PollResponse[] Returns an array of PollResponse objects
+    //  * @return PollAnswer[] Returns an array of PollAnswer objects
     //  */
     /*
     public function findByExampleField($value)
@@ -63,7 +63,7 @@ class PollResponseRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?PollResponse
+    public function findOneBySomeField($value): ?PollAnswer
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')

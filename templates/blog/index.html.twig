@@ -28,13 +28,14 @@
     <h1>HELLO</h1>
     <p>TODO: Sonda</p>
     <p>TODO: Pagination</p>
-    {% for poll in polls %}
-        <p>Poll</p>
-        <p>Question:</br> {{ poll.question }}</p>
-        {% for answer in poll.pollanswers %}
-        <p>{{ answer }}</p>
-        {% endfor %}
-    {% endfor %}
+{#    {% for poll in polls %}#}
+{#        <p>Poll</p>#}
+{#        <p>Question:</br> {{ poll.question }}</p>#}
+{#        {% for answer in poll.pollanswers %}#}
+{#        <p>{{ answer }}</p>#}
+{#        {% endfor %}#}
+{#    {% endfor %}#}
 {% endblock %}
+{% block javascripts %}{% endblock %}
 </body>
 </html>

@@ -5,7 +5,11 @@ namespace App\Entity;
 use App\Repository\PollRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 #[ORM\Entity(repositoryClass: PollRepository::class)]
 class Poll
@@ -13,25 +17,24 @@ class Poll
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $question;
+    protected ?string $question;
 
-    #[ORM\OneToOne(targetEntity: PollResponse::class, cascade: ['persist', 'remove'])]
-    private $pollResponse;
-
-    #[ORM\ManyToMany(targetEntity: PollAnswer::class, mappedBy: 'poll', cascade: ['persist'])]
-    private $pollAnswers;
+    #[ORM\ManyToMany(targetEntity: 'PollAnswer' , cascade: ['persist'])]
+    protected ?Collection $answers;
 
     public function __construct()
     {
-        $this->pollAnswers = new ArrayCollection();
+        $this->answers = new ArrayCollection();
     }
+
     public function __toString()
     {
         return $this->question;
     }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -49,51 +52,40 @@ class Poll
         return $this;
     }
 
-    public function getPollResponse(): ?PollResponse
-    {
-        return $this->pollResponse;
-    }
-
-    public function setPollResponse(?PollResponse $pollResponse): self
-    {
-        $this->pollResponse = $pollResponse;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, PollAnswer>
      */
-    public function getPollAnswers(): Collection
+    public function getAnswers(): Collection
     {
-        return $this->pollAnswers;
+        return $this->answers;
     }
 
-//    public function addPollAnswer(PollAnswer $pollAnswer): void
+//    /**
+//     * @param PollAnswer $answers
+//     * @return $this
+//     */
+//    public function setAnswers(PollAnswer $answers): self
 //    {
-//        $this->pollAnswers->add($pollAnswer);
-//    }
+//        $this->answers = $answers;
 //
-//    public function removePollAnswer(PollAnswer $pollAnswer): void
-//    {
-//        $this->pollAnswers->remove($pollAnswer);
+//        return $this;
 //    }
-    public function addPollAnswer(PollAnswer $pollAnswer): self
-    {
-        if (!$this->pollAnswers->contains($pollAnswer)) {
-            $this->pollAnswers[] = $pollAnswer;
-            $pollAnswer->addPoll($this);
-        }
 
-        return $this;
+    /**
+     * @param PollAnswer $answer
+     * @return void
+     */
+    public function addAnswer(PollAnswer $answer): void
+    {
+        //$answer->addPoll($this);
+        if(!$this->answers->contains($answer)){
+            $this->answers->add($answer);
+        }
     }
-
-    public function removePollAnswer(PollAnswer $pollAnswer): self
+    public function removeAnswer(PollAnswer $answer): void
     {
-        if ($this->pollAnswers->removeElement($pollAnswer)) {
-            $pollAnswer->removePoll($this);
+        if(!$this->answers->contains($answer)){
+            $this->answers->remove($answer);
         }
-
-        return $this;
     }
 }
