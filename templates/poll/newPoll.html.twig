@@ -1,5 +1,12 @@
 {% extends '/blog/index.html.twig' %}
 {% block content %}
+    <label>New or existing poll?
+        <select id="new_existing" name="form_select" onchange="changeForm(this)">
+            <option {# id="newpollbutton"#} value="0">New Poll</option>
+            <option {# id="existingpollbutton"#} value="1">Existing Poll</option>
+        </select>
+    </label>
+    <div id="newpoll" style="display: block;">
     {{ form_start(form) }}
     {{ form_row(form.question) }}
     <ul class="answers"
@@ -11,9 +18,52 @@
     </ul>
     <button type="button" class="add_item_link" data-collection-holder-class="answers">Add an answer</button>
     {{ form_end(form) }}
+    </div>
+<div id="existingpoll" style="display: none;">
+    {{ form_start(choseform) }}
+    {{ form_row(choseform.question) }}
+    {{ form_end(choseform) }}
+</div>
+    {% for poll in polls %}
+        <p>Poll</p>
+        <form action="{{ path('admin_poll_delete', {'id': poll.id}) }}"
+              method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('admin_poll_delete') }}"/>
+            <button>DELETE</button>
+        </form>
+        <p>Question:<br> {{ poll.question }}</p>
+        {% for answer in poll.answers %}
+            <p>{{ answer }}</p>
+        {% endfor %}
+    {% endfor %}
+
 {% endblock %}
 {% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
+        function changeForm(select){
+            if(select.value===0){
+                document.getElementById('newpoll').style.display = "block";
+                document.getElementById('existingpoll').style.display = "none";
+            } else{
+                document.getElementById('newpoll').style.display = "none";
+                document.getElementById('existingpoll').style.display = "block";
+            }
+        }
+        // $(document).ready(function(){
+        //     // $('#newpoll').hide();
+        //     $('#existingpoll').hide();
+        //     $("#newpollbutton").click(function() {
+        //         $('#newpoll').show();
+        //         $('#existingpoll').hide();
+        //         return false
+        //     });
+        //     $("#existingpollbutton").click(function() {
+        //         $('#existingpoll').show();
+        //         $('#newpoll').hide();
+        //         return false
+        //     });
+        // });
         const addTagFormDeleteLink = (item) => {
             const removeFormButton = document.createElement('button');
             removeFormButton.innerText = 'Delete this tag';

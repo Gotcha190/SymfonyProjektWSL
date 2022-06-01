@@ -5,7 +5,9 @@ namespace App\Controller;
 
 use App\Entity\Poll;
 use App\Entity\PollAnswer;
+use App\Form\EditPollType;
 use App\Form\PollType;
+use App\Repository\PollRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,46 +35,46 @@ class PollController extends AbstractController
             'controller_name' => 'PollController',
         ]);
     }
-    #[Route('/newPoll', name: 'new_poll')]
-    public function newPoll(Request $request, ManagerRegistry $doctrine): Response
+    #[Route('/adminPoll', name: 'admin_poll')]
+    public function new(Request $request, ManagerRegistry $doctrine): Response
     {
         $manager = $doctrine->getManager();
         $poll = new Poll();
-
-//        $poll->setQuestion('hallo?');
-//        $answer1 = new PollAnswer();
-//        $answer1->setText('answer1');
-//        $poll->addAnswer($answer1);
-//        $answer2 = new PollAnswer();
-//        $answer2->setText('answer2');
-//        $poll->addAnswer($answer2);
-        //dump($poll);
-        //dump($answer1);
-
+        $chosepoll = new Poll();
         $form = $this->createForm(PollType::class, $poll);
+        $chosepoll = $this->createForm(EditPollType::class, $chosepoll);
         //dump($form);
         $form->handleRequest($request);
-        $originalAnswers = new ArrayCollection();
-        foreach ($poll->getAnswers() as $answer)
-        {
-            $answer->addPoll($poll);
-            $originalAnswers->add($answer);
-        }
+        $chosepoll->handleRequest($request);
+//        $originalAnswers = new ArrayCollection();
+//        foreach ($poll->getAnswers() as $answer)
+//        {
+//            $answer->addPoll($poll);
+//            $originalAnswers->add($answer);
+//        }
         if ($form->isSubmitted() && $form->isValid())
         {
             $poll = $form->getData();
-            foreach ($originalAnswers as $answer){
-                if($poll->getAnswers()->contains($answer) === false ){
-                    $manager->remove($answer);
-                }
-            }
+//            if(isset($data)) dump($data);
+//            foreach ($originalAnswers as $answer){
+//                if($poll->getAnswers()->contains($answer) === false ){
+//                    $manager->remove($answer);
+//                }
+//            }
             $manager->persist($poll);
             $manager->flush();
             return $this->redirectToRoute('homepage');
         }
-
+        if ($chosepoll->isSubmitted() && $chosepoll->isValid())
+        {
+            $poll = $chosepoll->get('question')->getData()->getId();
+//            dump($poll);
+            return $this->redirectToRoute('admin_poll_edit', ['id' => $poll]);
+        }
         return $this->renderForm('poll/newPoll.html.twig', [
             'form' => $form,
+            'choseform' => $chosepoll,
+            'polls' => $this->entityManager->getRepository(Poll::class)->findAll(),
         ]);
     }
     /**
@@ -82,9 +84,19 @@ class PollController extends AbstractController
      * @return Response
      * @throws \Exception
      */
+    #[Route('/adminPoll/{id}', name: 'admin_poll_edit')]
     public function edit($id, Request $request, EntityManagerInterface $entityManager): Response
     {
-        if (null === $task = $entityManager->getRepository(PollAnswer::class)->find($id)) {
+        $chosepoll = new Poll();
+        $chosepoll = $this->createForm(EditPollType::class, $chosepoll);
+        $chosepoll->handleRequest($request);
+        if ($chosepoll->isSubmitted() && $chosepoll->isValid())
+        {
+            $poll = $chosepoll->get('question')->getData()->getId();
+            //dump($poll);
+            return $this->redirectToRoute('admin_poll_edit', ['id' => $poll]);
+        }
+        if (null === $poll = $entityManager->getRepository(Poll::class)->find($id)) {
             throw new \Exception ('No task found for id ' . $id);
         }
 
@@ -116,8 +128,22 @@ class PollController extends AbstractController
             $entityManager->flush();
 
             // redirect back to some edit page
-            return $this->redirectToRoute('homepage', ['id' => $id]);
+            return $this->redirectToRoute('homepage');
         }
         // ... render some form template
+        return $this->renderForm('poll/newPoll.html.twig', [
+            'form' => $editForm,
+            'choseform' => $chosepoll,
+            'polls' => $this->entityManager->getRepository(Poll::class)->findAll(),
+        ]);
+    }
+
+    #[Route('/adminPoll/delete/{id}', name: 'admin_poll_delete')]
+    public function delete(Request $request, $id, PollRepository $pollRepository)
+    {
+        $poll= $pollRepository->find($id);
+        $this->entityManager->remove($poll);
+        $this->entityManager->flush();
+        return $this->redirectToRoute('homepage');
     }
 }
