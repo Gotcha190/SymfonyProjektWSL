@@ -2,8 +2,8 @@
 {% block content %}
     <label>New or existing poll?
         <select id="new_existing" name="form_select" onchange="changeForm(this)">
-            <option {# id="newpollbutton"#} value="0">New Poll</option>
-            <option {# id="existingpollbutton"#} value="1">Existing Poll</option>
+            <option value="0">New Poll</option>
+            <option value="1">Existing Poll</option>
         </select>
     </label>
     <div id="newpoll" style="display: block;">
@@ -13,9 +13,17 @@
         data-index="{{ form.answers|length > 0 ? form.answers|last.vars.name + 1 : 0 }}"
         data-prototype="{{ form_widget(form.answers.vars.prototype)|e('html_attr') }}">
         {% for answer in form.answers %}
+
             <li>{{ form_row(answer.text) }}</li>
+
         {% endfor %}
     </ul>
+        <select class="select_answer">
+                <option>New</option>
+            {% for answer in answers %}
+                <option>{{ answer }}</option>
+            {% endfor %}
+        </select>
     <button type="button" class="add_item_link" data-collection-holder-class="answers">Add an answer</button>
     {{ form_end(form) }}
     </div>
@@ -66,7 +74,7 @@
         // });
         const addTagFormDeleteLink = (item) => {
             const removeFormButton = document.createElement('button');
-            removeFormButton.innerText = 'Delete this tag';
+            removeFormButton.innerText = 'Delete this answer';
 
             item.append(removeFormButton);
 

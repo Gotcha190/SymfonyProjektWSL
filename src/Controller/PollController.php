@@ -75,6 +75,8 @@ class PollController extends AbstractController
             'form' => $form,
             'choseform' => $chosepoll,
             'polls' => $this->entityManager->getRepository(Poll::class)->findAll(),
+            'answers'=> $this->entityManager->getRepository(PollAnswer::class)->findAll()
+
         ]);
     }
     /**
@@ -135,6 +137,7 @@ class PollController extends AbstractController
             'form' => $editForm,
             'choseform' => $chosepoll,
             'polls' => $this->entityManager->getRepository(Poll::class)->findAll(),
+            'answers'=> $this->entityManager->getRepository(PollAnswer::class)->findAll()
         ]);
     }
 
